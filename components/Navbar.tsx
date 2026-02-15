@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-// Fix: Use named imports for react-router-dom to resolve property existence errors
-import { Link, useLocation } from 'react-router-dom';
+// Fix: Use namespace import for react-router-dom to resolve missing exported member errors
+import * as Router from 'react-router-dom';
+const { Link, useLocation } = Router;
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
 
