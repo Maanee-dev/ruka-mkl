@@ -1,21 +1,17 @@
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
-// Corrected imports for react-router-dom by using named imports to fix TypeScript resolution errors.
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-
-import { 
-  Menu, X, MapPin, Phone, Mail, 
-  ChevronRight, Check, Star, 
-  ArrowRight, Instagram, Facebook,
-  ArrowUpRight, Globe
-} from 'lucide-react';
-
-import { ROOMS, COLORS } from './constants';
+// Use namespace import to resolve issues with named exports in certain environments
+import * as ReactRouterDOM from 'react-router-dom';
+import { Menu, X, Instagram, Facebook, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ROOMS } from './constants';
 import { calculateBooking } from './utils/pricing';
 import { RoomType } from './types';
 
-// --- Global Scroll Restoration ---
+// Extract components from the namespace to maintain existing code structure
+const { BrowserRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
+
+// --- Scroll Restoration ---
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -24,55 +20,48 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- Shared Components ---
-
+// --- Navbar Component ---
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'THE HOTEL', path: '/' },
-    { name: 'SANCTUARIES', path: '/rooms' },
+  const links = [
+    { name: 'HOTEL', path: '/' },
+    { name: 'ROOMS', path: '/rooms' },
     { name: 'EXPERIENCES', path: '/experiences' },
-    { name: 'OUR STORY', path: '/about' },
     { name: 'CONTACT', path: '/contact' }
   ];
 
   const isDark = isScrolled || location.pathname !== '/';
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-1000 ${isDark ? 'bg-[#FCFAF8]/95 backdrop-blur-md py-5 border-b border-black/[0.03]' : 'bg-transparent py-14'}`}>
-      <div className="container mx-auto px-10 md:px-20 flex justify-between items-center">
-        <Link to="/" className="group">
-          <div className="flex flex-col">
-            <span className={`text-2xl font-serif font-light tracking-[0.4em] transition-colors duration-500 ${isDark ? 'text-[#1A1A1A]' : 'text-white'}`}>
-              RUKA
-            </span>
-            <span className="text-[6px] font-accent tracking-[1em] text-[#C5A059] mt-1 uppercase">Maldives</span>
-          </div>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${isDark ? 'bg-[#FCFAF8]/90 backdrop-blur-md py-6 border-b border-black/[0.03]' : 'bg-transparent py-12'}`}>
+      <div className="container mx-auto px-8 md:px-16 flex justify-between items-center">
+        <Link to="/" className="group flex flex-col">
+          <span className={`text-2xl font-serif tracking-[0.4em] transition-colors ${isDark ? 'text-[#1A1A1A]' : 'text-white'}`}>RUKA</span>
+          <span className="text-[6px] font-accent text-[#C5A059] mt-1 tracking-[1em]">MALDIVES</span>
         </Link>
 
-        {/* Desktop Nav */}
         <div className="hidden lg:flex items-center space-x-16">
-          {navLinks.map(link => (
+          {links.map(link => (
             <Link 
               key={link.path} 
               to={link.path} 
-              className={`text-[9px] font-accent font-bold tracking-[0.6em] transition-all hover:text-[#C5A059] ${isDark ? 'text-[#1A1A1A]' : 'text-white/60'}`}
+              className={`text-[9px] font-accent font-bold tracking-[0.5em] transition-all hover:text-[#C5A059] ${isDark ? 'text-[#1A1A1A]' : 'text-white/70'}`}
             >
               {link.name}
             </Link>
           ))}
           <Link 
             to="/booking" 
-            className={`px-12 py-4 text-[9px] font-accent font-bold tracking-[0.6em] transition-all duration-500 ${isDark ? 'bg-[#1A1A1A] text-white hover:bg-[#C5A059]' : 'border border-white/20 text-white hover:bg-white hover:text-[#1A1A1A]'}`}
+            className={`px-10 py-4 text-[9px] font-accent font-bold tracking-[0.5em] transition-all ${isDark ? 'bg-[#1A1A1A] text-white hover:bg-[#C5A059]' : 'border border-white/20 text-white hover:bg-white hover:text-[#1A1A1A]'}`}
           >
             BOOK
           </Link>
@@ -83,33 +72,27 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Magazine Slide Menu */}
-      <div className={`lg:hidden fixed inset-0 bg-[#FCFAF8] z-50 transition-all duration-700 ease-in-out transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 bg-[#FCFAF8] z-[60] transition-transform duration-700 ease-in-out transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-16 h-full flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-center mb-32">
-              <span className="text-xl font-serif tracking-[0.3em]">RUKA</span>
+            <div className="flex justify-between items-center mb-24">
+              <span className="text-xl font-serif tracking-widest">RUKA</span>
               <button onClick={() => setIsMenuOpen(false)}><X size={32} strokeWidth={1} /></button>
             </div>
-            <div className="flex flex-col space-y-12">
-              {navLinks.map((link, i) => (
+            <div className="flex flex-col space-y-10">
+              {links.map((link, i) => (
                 <Link 
                   key={link.path} 
                   to={link.path} 
                   onClick={() => setIsMenuOpen(false)} 
-                  className="text-5xl font-serif font-light tracking-tighter flex justify-between items-center group overflow-hidden"
+                  className="text-5xl font-serif font-light tracking-tighter hover:italic hover:translate-x-4 transition-all"
                 >
-                  <span className="transform transition-transform duration-700 hover:italic hover:translate-x-4">
-                    {link.name}
-                  </span>
-                  <span className="text-xs text-[#C5A059] font-accent">0{i+1}</span>
+                  {link.name}
                 </Link>
               ))}
+              <Link to="/booking" onClick={() => setIsMenuOpen(false)} className="text-5xl font-serif font-light text-[#C5A059]">RESERVE</Link>
             </div>
-          </div>
-          <div className="flex justify-between border-t border-black/5 pt-12">
-             <span className="text-[10px] font-accent tracking-widest text-gray-400">DHIFFUSHI, MALDIVES</span>
-             <Instagram size={20} className="text-gray-300" />
           </div>
         </div>
       </div>
@@ -117,195 +100,108 @@ const Navbar: React.FC = () => {
   );
 };
 
+// --- Home Component ---
 const Home: React.FC = () => {
   return (
-    <main className="bg-[#FCFAF8] selection:bg-[#C5A059] selection:text-white">
-      {/* Cover Page Hero */}
+    <main className="bg-[#FCFAF8]">
+      {/* Editorial Cover Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1A1A1A]">
         <img 
           src="https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?q=80&w=2400&auto=format&fit=crop" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50 animate-[subtle-zoom_60s_linear_infinite]" 
-          alt="Maldives Cover" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-110" 
+          alt="Cover" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-40"></div>
-        
-        <div className="relative z-20 text-center px-6 max-w-7xl">
-          <div className="overflow-hidden mb-12">
-             <span className="block text-white/50 text-[10px] font-accent font-bold tracking-[1.5em] uppercase animate-[reveal-up_1.2s_cubic-bezier(0.16,1,0.3,1)]">
-               The Summer Issue
-             </span>
-          </div>
-          <h1 className="text-[16vw] md:text-[11vw] text-white font-serif leading-[0.8] tracking-tighter mb-16 animate-[reveal-up_1.5s_cubic-bezier(0.16,1,0.3,1)]">
-            Pure <br /> <span className="italic font-light text-white/40">Canvas</span>
+        <div className="relative z-10 text-center px-6">
+          <span className="block text-white/60 text-[10px] font-accent mb-12 animate-fade">THE LUXURY OF SILENCE</span>
+          <h1 className="text-[18vw] md:text-[12vw] text-white font-serif leading-[0.8] tracking-tighter mb-16 animate-reveal">
+            Pure <br /> <span className="italic font-light opacity-50 text-white">Light</span>
           </h1>
-          <div className="animate-[fade-in_2.5s_ease-out_0.5s_forwards] opacity-0 flex flex-col items-center">
-             <Link to="/booking" className="group flex flex-col items-center space-y-6">
-                <span className="text-white text-[10px] font-bold tracking-[0.8em] uppercase hover:text-[#C5A059] transition-colors">Begin Your Chapter</span>
-                <div className="w-[1px] h-24 bg-gradient-to-b from-white to-transparent group-hover:h-32 transition-all duration-700"></div>
-             </Link>
+          <div className="flex justify-center animate-fade" style={{ animationDelay: '1s' }}>
+            <Link to="/booking" className="group flex flex-col items-center">
+              <span className="text-white text-[9px] font-accent tracking-[1em] mb-6">EXPLORE</span>
+              <div className="w-[1px] h-20 bg-gradient-to-b from-white to-transparent group-hover:h-32 transition-all duration-700"></div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Page 01: The Vision */}
-      <section className="py-64 px-10 md:px-32 bg-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-24 items-start">
-            <div className="md:col-span-4">
-               <span className="text-[#C5A059] text-[9px] font-accent font-bold tracking-[0.8em] uppercase block mb-12">01 — VISION</span>
-               <h2 className="text-6xl font-serif font-light leading-[1.1] text-[#1A1A1A] mb-8">
-                 A curated <br /> <span className="italic">silence.</span>
-               </h2>
-               <div className="w-12 h-[1px] bg-[#C5A059]"></div>
+      {/* Page 01: The Philosophy */}
+      <section className="py-64 px-8 md:px-24 bg-white">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
+            <div className="lg:col-span-5">
+              <span className="text-[#C5A059] text-[10px] font-accent mb-12 block">01 / CONCEPT</span>
+              <h2 className="text-6xl md:text-8xl font-serif leading-none tracking-tighter mb-12">
+                Curated <br /> <span className="italic">Simplicity.</span>
+              </h2>
             </div>
-            <div className="md:col-span-7 md:col-start-6">
-               <p className="text-[#1A1A1A] font-light text-2xl md:text-3xl leading-[1.4] tracking-tight mb-16">
-                 At Ruka, we define luxury by what is absent. No crowds, no digital clutter, only the rhythmic breath of the Indian Ocean and the soft sands of Dhiffushi.
-               </p>
-               <div className="grid grid-cols-2 gap-12 border-t border-black/5 pt-16">
-                  <div>
-                    <span className="text-[8px] font-accent font-bold tracking-[0.4em] text-gray-400 block mb-4 uppercase">Architecture</span>
-                    <p className="text-sm font-light leading-relaxed">Minimalist geometry that honors the natural landscape.</p>
-                  </div>
-                  <div>
-                    <span className="text-[8px] font-accent font-bold tracking-[0.4em] text-gray-400 block mb-4 uppercase">Experience</span>
-                    <p className="text-sm font-light leading-relaxed">Deeply personal service in a boutique 12-room sanctuary.</p>
-                  </div>
-               </div>
+            <div className="lg:col-span-6 lg:col-start-7 pt-12">
+              <p className="text-2xl md:text-3xl font-light text-[#1A1A1A] leading-relaxed tracking-tight mb-16">
+                Ruka Maldives is an architectural dialogue between the Indian Ocean and contemporary minimalism. A boutique sanctuary of twelve rooms on Dhiffushi Island.
+              </p>
+              <div className="w-16 h-[1px] bg-[#C5A059]"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Page 02: Lookbook spread */}
-      <section className="pb-64 bg-white overflow-hidden">
-        <div className="px-10 md:px-32 mb-40 text-center">
-          <span className="text-[#C5A059] text-[9px] font-accent font-bold tracking-[0.8em] uppercase block mb-6">02 — LOOKBOOK</span>
-          <h2 className="text-4xl font-serif font-light italic">The Art of Repose</h2>
-        </div>
-
-        <div className="container mx-auto px-10">
-          <div className="grid grid-cols-12 gap-y-64 md:gap-x-12 relative">
-            {/* The Big Cover Image - Asymmetrical */}
-            <div className="col-span-12 md:col-span-7 group">
-              <div className="relative aspect-[4/5] overflow-hidden grayscale hover:grayscale-0 transition-all duration-[2s]">
-                <img src={ROOMS[3].images[0]} className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105" alt="Suite" />
-                <div className="absolute top-10 left-10 text-white mix-blend-difference">
-                   <span className="text-6xl font-serif italic">01</span>
-                </div>
+      {/* Page 02: Asymmetrical Lookbook */}
+      <section className="pb-64 bg-white">
+        <div className="container mx-auto px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-64 lg:gap-x-12 relative">
+            
+            {/* Main Feature */}
+            <div className="lg:col-span-7">
+              <div className="aspect-[4/5] overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000">
+                <img src={ROOMS[3].images[0]} className="w-full h-full object-cover" alt="Suite" />
               </div>
-              <div className="mt-12 flex justify-between items-end max-w-2xl">
-                <div>
-                  <h3 className="text-4xl font-serif mb-4">{ROOMS[3].name}</h3>
-                  <p className="text-xs text-gray-400 tracking-[0.2em] uppercase">Refined Family Space</p>
-                </div>
-                <Link to="/rooms" className="text-[10px] font-bold tracking-[0.4em] uppercase border-b border-black/10 pb-2 hover:border-[#C5A059] transition-colors">Details</Link>
+              <div className="mt-12">
+                <h3 className="text-4xl font-serif mb-4">The Family Sanctuary</h3>
+                <span className="text-[10px] font-accent text-gray-400">LUXURY REDEFINED</span>
               </div>
             </div>
 
-            {/* Floating Editorial Piece */}
-            <div className="col-span-12 md:col-span-4 md:col-start-9 md:mt-48">
-              <div className="relative aspect-[3/4] overflow-hidden mb-12 shadow-sm">
-                <img src={ROOMS[0].images[0]} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-[2s]" alt="Room" />
+            {/* Offset Floating Element */}
+            <div className="lg:col-span-4 lg:col-start-9 lg:mt-64">
+              <div className="aspect-[3/4] overflow-hidden shadow-2xl mb-12">
+                <img src={ROOMS[0].images[0]} className="w-full h-full object-cover" alt="Standard" />
               </div>
               <div className="pl-12 border-l border-[#C5A059]">
-                 <h3 className="text-2xl font-serif mb-6 leading-tight">Essentials <br /> reimagined.</h3>
-                 <p className="text-sm text-gray-400 font-light leading-relaxed mb-8">
-                   Our Standard Queen rooms are a masterclass in functional minimalism. Every object serves a purpose, every shadow creates depth.
-                 </p>
-                 <span className="text-[9px] font-accent tracking-widest text-[#C5A059] uppercase">From $88 / Night</span>
+                <p className="text-sm font-light leading-loose text-gray-500 mb-8">
+                  Every sanctuary is designed with intention. A focus on texture, light, and the rhythmic sound of the waves.
+                </p>
+                <Link to="/rooms" className="text-[10px] font-accent text-[#C5A059] flex items-center hover:translate-x-2 transition-transform">
+                  VIEW ALL ROOMS <ArrowRight size={14} className="ml-4" />
+                </Link>
               </div>
             </div>
 
-            {/* Horizontal Break */}
-            <div className="col-span-12 md:col-span-10 md:col-start-2 mt-40">
-               <div className="relative aspect-[21/9] overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=2000" 
-                    className="w-full h-full object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-[2s]" 
-                    alt="Interior"
-                  />
-                  <div className="absolute inset-0 bg-black/10"></div>
-               </div>
-               <div className="mt-12 text-center max-w-xl mx-auto">
-                  <blockquote className="text-3xl font-serif italic text-gray-400 leading-relaxed mb-8">
-                    "Style is knowing who you are, what you want to say, and not giving a damn."
-                  </blockquote>
-                  <span className="text-[8px] font-accent tracking-[0.4em] uppercase text-gray-300">— The Ruka Philosophy</span>
-               </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Page 03: Values */}
-      <section className="py-48 bg-[#1A1A1A] text-white">
-        <div className="container mx-auto px-10">
-           <div className="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-white/5 pb-16">
-              <h2 className="text-7xl font-serif tracking-tighter mb-8 md:mb-0">Exceptional <br /> by <span className="italic font-light opacity-40">Default</span></h2>
-              <div className="text-right">
-                 <span className="text-[10px] font-accent tracking-[0.5em] text-[#C5A059] uppercase block mb-4">Dhiffushi, Maldives</span>
-                 <p className="text-white/40 font-light text-xs tracking-widest uppercase">Kaafu Atoll | 04.28 N, 73.71 E</p>
-              </div>
-           </div>
-           
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-24">
-              {[
-                { val: '9.8', label: 'Guest Satisfaction', suffix: '/ 10' },
-                { val: '12', label: 'Boutique Sanctuaries', suffix: '' },
-                { val: '01', label: 'Hour from Male\'', suffix: '' },
-                { val: '24', label: 'Concierge Care', suffix: '/ 7' }
-              ].map((stat, i) => (
-                <div key={i} className="group">
-                  <div className="text-5xl md:text-7xl font-serif mb-6 group-hover:text-[#C5A059] transition-colors duration-500">
-                    {stat.val}<span className="text-xl font-light opacity-30 ml-1">{stat.suffix}</span>
-                  </div>
-                  <span className="text-[8px] font-accent tracking-[0.4em] text-white/30 uppercase">{stat.label}</span>
-                </div>
-              ))}
-           </div>
+      {/* Call to Action Footer */}
+      <section className="py-64 bg-[#1A1A1A] text-white text-center">
+        <div className="container mx-auto px-8 max-w-4xl">
+          <span className="text-[#C5A059] text-[10px] font-accent mb-12 block tracking-[1em]">RESERVATIONS</span>
+          <h2 className="text-6xl md:text-8xl font-serif tracking-tighter mb-20">Your Chapter <br /> <span className="italic font-light opacity-30">Begins</span></h2>
+          <Link 
+            to="/booking" 
+            className="inline-block px-16 py-6 bg-white text-[#1A1A1A] text-[10px] font-accent font-bold hover:bg-[#C5A059] hover:text-white transition-all duration-500"
+          >
+            BOOK YOUR STAY
+          </Link>
         </div>
       </section>
 
-      {/* Editorial Contact / Subscription */}
-      <section className="py-64 bg-[#FCFAF8]">
-        <div className="container mx-auto px-10 max-w-4xl text-center">
-          <span className="text-[#C5A059] text-[10px] font-accent tracking-[1em] uppercase mb-12 block">Final Thoughts</span>
-          <h2 className="text-6xl md:text-[8vw] font-serif leading-[0.9] tracking-tighter mb-20 text-[#1A1A1A]">
-            Reserved <br /> for the <br /> <span className="italic font-light">Inspired</span>
-          </h2>
-          <div className="flex flex-col items-center space-y-12">
-            <Link to="/booking" className="px-20 py-6 bg-[#1A1A1A] text-white text-[10px] font-bold tracking-[0.6em] uppercase hover:bg-[#C5A059] transition-all duration-700 shadow-xl">
-              Check Availability
-            </Link>
-            <div className="flex space-x-12 pt-20 border-t border-black/5 w-full justify-center">
-               <a href="#" className="text-[9px] font-accent font-bold tracking-[0.3em] uppercase hover:text-[#C5A059]">Instagram</a>
-               <a href="#" className="text-[9px] font-accent font-bold tracking-[0.3em] uppercase hover:text-[#C5A059]">Facebook</a>
-               <a href="#" className="text-[9px] font-accent font-bold tracking-[0.3em] uppercase hover:text-[#C5A059]">Contact</a>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <Footer />
+      <footer className="py-12 bg-white text-center border-t border-black/[0.03]">
+        <span className="text-[9px] font-accent text-gray-300">© 2025 RUKA MALDIVES — ALL RIGHTS RESERVED</span>
+      </footer>
     </main>
   );
 };
 
-const Footer: React.FC = () => (
-  <footer className="py-16 bg-white border-t border-black/[0.03] text-center">
-    <div className="container mx-auto px-10">
-       <div className="flex flex-col md:flex-row justify-between items-center opacity-30 text-[8px] font-accent tracking-[0.8em] uppercase space-y-6 md:space-y-0">
-          <span>&copy; 2025 Ruka Maldives Boutique</span>
-          <span>Designed with Intention</span>
-          <span>Terms & Privacy</span>
-       </div>
-    </div>
-  </footer>
-);
-
-// --- Booking Engine Page ---
-
+// --- Booking Component ---
 const BookingPage: React.FC = () => {
   const [formData, setFormData] = useState({
     roomType: 'standard_queen' as RoomType,
@@ -335,22 +231,21 @@ const BookingPage: React.FC = () => {
   }, [formData]);
 
   return (
-    <div className="pt-48 pb-64 px-10 bg-white min-h-screen">
+    <div className="pt-48 pb-64 px-8 bg-white min-h-screen">
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-32">
-          {/* Reservation Column */}
+        <div className="flex flex-col lg:flex-row gap-24">
           <div className="lg:w-7/12">
             <header className="mb-24">
-              <span className="text-[#C5A059] text-[10px] font-accent font-bold tracking-[1em] uppercase mb-6 block">Reservation</span>
-              <h1 className="text-7xl font-serif tracking-tighter leading-[0.8]">The Stay <br /> <span className="italic font-light">Inquiry</span></h1>
+              <span className="text-[#C5A059] text-[10px] font-accent mb-4 block">RESERVATION</span>
+              <h1 className="text-7xl font-serif tracking-tighter">Stay <span className="italic">Details</span></h1>
             </header>
 
-            <div className="space-y-20">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-16">
+            <div className="space-y-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="flex flex-col space-y-4">
-                  <label className="text-[9px] font-accent font-bold tracking-[0.4em] text-gray-400 uppercase">Sanctuary</label>
+                  <label className="text-[9px] font-accent text-gray-400">THE ROOM</label>
                   <select 
-                    className="bg-transparent border-b border-black/5 py-4 font-serif text-2xl focus:outline-none focus:border-[#C5A059] transition-all appearance-none cursor-pointer"
+                    className="bg-transparent border-b border-black/5 py-4 font-serif text-2xl focus:outline-none focus:border-[#C5A059] appearance-none"
                     value={formData.roomType}
                     onChange={(e) => setFormData({...formData, roomType: e.target.value as RoomType})}
                   >
@@ -358,67 +253,55 @@ const BookingPage: React.FC = () => {
                   </select>
                 </div>
                 <div className="flex flex-col space-y-4">
-                  <label className="text-[9px] font-accent font-bold tracking-[0.4em] text-gray-400 uppercase">Occupancy</label>
+                  <label className="text-[9px] font-accent text-gray-400">GUESTS</label>
                   <div className="flex items-center space-x-12 py-4 border-b border-black/5">
-                    <button onClick={() => setFormData({...formData, adults: Math.max(1, formData.adults - 1)})} className="text-2xl font-serif text-[#C5A059] hover:opacity-50 transition-opacity">-</button>
-                    <span className="text-2xl font-serif">{formData.adults} Adults</span>
-                    <button onClick={() => setFormData({...formData, adults: Math.min(3, formData.adults + 1)})} className="text-2xl font-serif text-[#C5A059] hover:opacity-50 transition-opacity">+</button>
+                    <button onClick={() => setFormData({...formData, adults: Math.max(1, formData.adults - 1)})} className="text-2xl font-serif text-[#C5A059]">-</button>
+                    <span className="text-2xl font-serif">{formData.adults} ADULTS</span>
+                    <button onClick={() => setFormData({...formData, adults: Math.min(3, formData.adults + 1)})} className="text-2xl font-serif text-[#C5A059]">+</button>
                   </div>
                 </div>
                 <div className="flex flex-col space-y-4">
-                  <label className="text-[9px] font-accent font-bold tracking-[0.4em] text-gray-400 uppercase">Arrival</label>
+                  <label className="text-[9px] font-accent text-gray-400">ARRIVAL</label>
                   <input 
                     type="date" 
-                    className="bg-transparent border-b border-black/5 py-4 font-serif text-xl focus:outline-none focus:border-[#C5A059] cursor-pointer"
+                    className="bg-transparent border-b border-black/5 py-4 font-serif text-xl focus:outline-none focus:border-[#C5A059]"
                     onChange={(e) => setFormData({...formData, checkIn: e.target.value})}
                   />
                 </div>
                 <div className="flex flex-col space-y-4">
-                  <label className="text-[9px] font-accent font-bold tracking-[0.4em] text-gray-400 uppercase">Departure</label>
+                  <label className="text-[9px] font-accent text-gray-400">DEPARTURE</label>
                   <input 
                     type="date" 
-                    className="bg-transparent border-b border-black/5 py-4 font-serif text-xl focus:outline-none focus:border-[#C5A059] cursor-pointer"
+                    className="bg-transparent border-b border-black/5 py-4 font-serif text-xl focus:outline-none focus:border-[#C5A059]"
                     onChange={(e) => setFormData({...formData, checkOut: e.target.value})}
                   />
                 </div>
               </div>
-              
-              <div className="pt-16">
-                 <button className="group flex items-center space-x-8 px-16 py-6 bg-[#1A1A1A] text-white text-[10px] font-bold tracking-[0.5em] uppercase hover:bg-[#C5A059] transition-all duration-700">
-                   <span>Submit Reservation Request</span>
-                   <ArrowUpRight size={18} className="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                 </button>
-              </div>
+              <button className="px-16 py-6 bg-[#1A1A1A] text-white text-[10px] font-accent hover:bg-[#C5A059] transition-all duration-700">
+                SUBMIT REQUEST
+              </button>
             </div>
           </div>
 
-          {/* Editorial Receipt Column */}
           <div className="lg:w-4/12">
-            <div className="sticky top-48 bg-[#FCFAF8] border border-black/[0.03] p-16 shadow-sm">
-              <header className="mb-16 border-b border-black/5 pb-8">
-                 <h2 className="text-2xl font-serif font-light mb-2">Selected Stay</h2>
-                 <p className="text-[8px] font-accent tracking-widest text-gray-400 uppercase">Editorial Summary</p>
-              </header>
-              
+            <div className="sticky top-48 bg-[#FCFAF8] p-12 border border-black/[0.03]">
+              <h2 className="text-2xl font-serif mb-12 border-b border-black/5 pb-6">Your Stay</h2>
               {!calculation ? (
-                <p className="text-gray-400 font-light text-sm italic leading-relaxed">
-                  Please define your journey parameters on the left to generate an inquiry summary.
-                </p>
+                <p className="text-gray-400 text-sm font-light italic">Select your dates to generate a summary.</p>
               ) : (
-                <div className="space-y-10">
-                  <div className="flex justify-between items-end border-b border-black/[0.02] pb-4">
-                    <span className="text-[9px] font-accent tracking-[0.2em] uppercase text-gray-400">Accomodation ({calculation.nights} Nights)</span>
-                    <span className="font-serif text-lg text-[#1A1A1A]">${calculation.totalRoomCost.toFixed(2)}</span>
+                <div className="space-y-8">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[9px] font-accent text-gray-400">ROOM RATE ({calculation.nights} NIGHTS)</span>
+                    <span className="font-serif text-xl">${calculation.totalRoomCost.toFixed(0)}</span>
                   </div>
-                  <div className="flex justify-between items-end border-b border-black/[0.02] pb-4">
-                    <span className="text-[9px] font-accent tracking-[0.2em] uppercase text-gray-400">Green Tax (Gov.)</span>
-                    <span className="font-serif text-lg text-[#1A1A1A]">${calculation.greenTaxTotal.toFixed(2)}</span>
+                  <div className="flex justify-between items-end">
+                    <span className="text-[9px] font-accent text-gray-400">GREEN TAX</span>
+                    <span className="font-serif text-xl">${calculation.greenTaxTotal.toFixed(0)}</span>
                   </div>
-                  <div className="pt-16">
+                  <div className="pt-8 border-t border-black/5">
                     <div className="flex flex-col items-end">
-                      <span className="text-[10px] font-bold tracking-[0.6em] uppercase mb-4 text-[#C5A059]">Total Estimate</span>
-                      <span className="text-7xl font-serif text-[#1A1A1A] leading-none tracking-tighter">${calculation.grandTotal.toFixed(0)}</span>
-                      <span className="text-[8px] font-accent mt-4 text-gray-300">USD INCLUDING TAXES</span>
+                      <span className="text-[9px] font-accent text-[#C5A059] mb-4">TOTAL ESTIMATE</span>
+                      <span className="text-7xl font-serif leading-none">${calculation.grandTotal.toFixed(0)}</span>
                     </div>
                   </div>
                 </div>
@@ -432,7 +315,6 @@ const BookingPage: React.FC = () => {
 };
 
 // --- App Orchestration ---
-
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -441,7 +323,6 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<BookingPage />} />
-        {/* Simple redirects for other pages to Home for demo purposes */}
         <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>

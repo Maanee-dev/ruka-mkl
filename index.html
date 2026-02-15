@@ -1,68 +1,64 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruka Maldives | Boutique Sanctuary Dhiffushi</title>
+  <title>Ruka Maldives | Boutique Sanctuary</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100;200;300;400;500&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100;200;300;400;500&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #FCFAF8;
+      --text-color: #1A1A1A;
+      --accent-color: #C5A059;
+    }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #FCFAF8;
-      color: #1A1A1A;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
     h1, h2, h3, h4, .font-serif {
       font-family: 'Playfair Display', serif;
+      font-weight: 300;
     }
     .font-accent {
       font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
     }
-    @keyframes subtle-zoom {
-      from { transform: scale(1); }
-      to { transform: scale(1.15); }
+    ::selection {
+      background: var(--accent-color);
+      color: white;
     }
     @keyframes reveal-up {
-      from { transform: translateY(120%); opacity: 0; }
+      from { transform: translateY(100px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
     @keyframes fade-in {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    .vertical-text {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-    }
-    ::selection {
-      background: #C5A059;
-      color: white;
-    }
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #FCFAF8;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #E5E5E5;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #C5A059;
-    }
+    .animate-reveal { animation: reveal-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-fade { animation: fade-in 2s ease-out forwards; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #E5E5E5; transition: background 0.3s; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
   </style>
-<script type="importmap">
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
     "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
     "lucide-react": "https://esm.sh/lucide-react@^0.564.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
@@ -70,5 +66,7 @@
 </head>
 <body>
   <div id="root"></div>
+  <!-- CRITICAL: Vite entry point script -->
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>

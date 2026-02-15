@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-// Corrected imports for react-router-dom by using named imports to fix TypeScript resolution errors.
-import { Link, useLocation } from 'react-router-dom';
-
+// Use namespace import to resolve issues with named exports in certain environments
+import * as ReactRouterDOM from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
+
+// Extract components from the namespace to maintain existing code structure
+const { Link, useLocation } = ReactRouterDOM;
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,7 +59,6 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Toggle */}
         <button className="md:hidden text-[#2C3E50]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {/* Fix: COLORS.deepDark is used instead of undefined COLORS.deepOcean. */}
           {isMenuOpen ? <X size={28} /> : <Menu size={28} color={isDark ? COLORS.deepDark : 'white'} />}
         </button>
       </div>
