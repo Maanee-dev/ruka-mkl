@@ -4,16 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruka Maldives | Boutique Guest House Dhiffushi</title>
+  <title>Ruka Maldives | Boutique Sanctuary Dhiffushi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100;200;300;400;500&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #F5E6D3;
-      color: #2C3E50;
+      background-color: #FCFAF8;
+      color: #1A1A1A;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
     h1, h2, h3, h4, .font-serif {
       font-family: 'Playfair Display', serif;
@@ -21,11 +23,37 @@
     .font-accent {
       font-family: 'Montserrat', sans-serif;
     }
-    .glass {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    @keyframes subtle-zoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
+    @keyframes reveal-up {
+      from { transform: translateY(120%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .vertical-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    ::selection {
+      background: #C5A059;
+      color: white;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FCFAF8;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #E5E5E5;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C5A059;
     }
   </style>
 <script type="importmap">

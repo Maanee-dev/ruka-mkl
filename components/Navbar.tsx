@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-// Fix: Use named imports from react-router-dom as the property-based namespace access is not working.
+// Corrected imports for react-router-dom by using named imports to fix TypeScript resolution errors.
 import { Link, useLocation } from 'react-router-dom';
+
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
 
@@ -56,7 +57,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Toggle */}
         <button className="md:hidden text-[#2C3E50]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {/* Fix: COLORS.deepOcean was not defined in constants.tsx; using COLORS.deepDark instead. */}
+          {/* Fix: COLORS.deepDark is used instead of undefined COLORS.deepOcean. */}
           {isMenuOpen ? <X size={28} /> : <Menu size={28} color={isDark ? COLORS.deepDark : 'white'} />}
         </button>
       </div>
