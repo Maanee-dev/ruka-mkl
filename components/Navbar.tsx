@@ -1,12 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-// Use namespace import to resolve issues with named exports in certain environments
-import * as ReactRouterDOM from 'react-router-dom';
+// Fix: Use named imports for react-router-dom to resolve property existence errors
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
-
-// Extract components from the namespace to maintain existing code structure
-const { Link, useLocation } = ReactRouterDOM;
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
