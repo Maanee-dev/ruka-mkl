@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-// Fix: Use named imports for react-router-dom to resolve missing exported member errors from the namespace
-import { Link, useLocation } from 'react-router-dom';
+// Fix: Use wildcard import for react-router-dom to handle environments where named exports are not detected correctly
+import * as ReactRouterDOM from 'react-router-dom';
+const { Link, useLocation } = ReactRouterDOM;
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
 
