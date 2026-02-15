@@ -1,0 +1,7 @@
+{
+  "name": "Ruka Maldives - Boutique Guest House",
+  "description": "A luxury boutique guest house website for Ruka Maldives in Dhiffushi, featuring a real-time booking engine, dynamic pricing, and an admin CMS.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
