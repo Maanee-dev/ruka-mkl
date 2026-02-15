@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-// Fix: Use wildcard import for react-router-dom to handle environments where named exports are not detected correctly
-import * as ReactRouterDOM from 'react-router-dom';
-const { Link, useLocation } = ReactRouterDOM;
+// Fix: Use named imports for react-router-dom to handle environments where named exports are properly typed
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { COLORS } from '../constants';
 
